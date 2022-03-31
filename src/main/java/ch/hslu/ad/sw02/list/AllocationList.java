@@ -19,7 +19,6 @@ public final class AllocationList {
     public void remove(final Allocation allocation) {
         if (isHeadToBeRemoved(allocation)) {
             pop();
-            return;
         } else {
             removeOther(allocation);
         }
@@ -29,6 +28,10 @@ public final class AllocationList {
         return allocation.equals(this.head.getContent());
     }
 
+    /**
+     * Hallo
+     * @return
+     */
     public Allocation pop() {
         Allocation allocationToBePopped = this.head.getContent();
         this.head = this.head.getNext();
