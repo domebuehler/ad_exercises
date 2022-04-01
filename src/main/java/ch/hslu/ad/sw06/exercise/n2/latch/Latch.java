@@ -15,6 +15,9 @@
  */
 package ch.hslu.ad.sw06.exercise.n2.latch;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * Eine Synchronisationshilfe, die es ermöglicht, einen oder mehrere Threads warten zu lassen, bis
  * diese durch andere Threads aufgeweckt werden. Latches sperren so lange, bis sie einmal ausgelöst
@@ -23,6 +26,7 @@ package ch.hslu.ad.sw06.exercise.n2.latch;
 public class Latch implements Synch {
 
     private boolean released = false;
+    private static final Logger LOG = LogManager.getLogger(Latch.class);
 
     @Override
     public void acquire() throws InterruptedException {
@@ -31,13 +35,14 @@ public class Latch implements Synch {
         }
     }
 
-    private void waitForRelease() {
+    private void waitForRelease() throws InterruptedException {
         try {
             synchronized (this) {
                 wait();
             }
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            LOG.info("interrupted while waiting for release");
+            throw new InterruptedException("interrupted while waiting for release");
         }
     }
 
