@@ -22,13 +22,30 @@ package ch.hslu.ad.sw06.exercise.n2.latch;
  */
 public class Latch implements Synch {
 
+    private boolean released = false;
+
     @Override
     public void acquire() throws InterruptedException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        while (!this.released) {
+            waitForRelease();
+        }
+    }
+
+    private void waitForRelease() {
+        try {
+            synchronized (this) {
+                wait();
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void release() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.released = true;
+        synchronized (this) {
+            notifyAll();
+        }
     }
 }
