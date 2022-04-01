@@ -17,4 +17,4 @@
 /**
  * Inhalt von N21 - Eine Demo mit dem Waitpool.
  */
-package ch.hslu.ad.exercise.n2.waitpool;
+package ch.hslu.ad.sw06.exercise.n2.waitpool;
