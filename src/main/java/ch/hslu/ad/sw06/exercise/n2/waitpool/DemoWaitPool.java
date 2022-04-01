@@ -15,17 +15,12 @@
  */
 package ch.hslu.ad.sw06.exercise.n2.waitpool;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 /**
  * Demonstration eines Wait-Pools.
  */
 public final class DemoWaitPool {
 
     private static final Object LOCK = new Object();
-
-    private static final Logger LOG = LogManager.getLogger(DemoWaitPool.class);
 
     /**
      * Privater Konstruktor.
@@ -35,10 +30,11 @@ public final class DemoWaitPool {
 
     /**
      * Main-Demo.
+     *
      * @param args not used.
      * @throws InterruptedException wenn das warten unterbrochen wird.
      */
-    public static void main(final String args[]) throws InterruptedException {
+    public static void main(final String[] args) throws InterruptedException {
         final MyTask waiter = new MyTask(LOCK);
         new Thread(waiter).start();
         Thread.sleep(1000);
