@@ -15,12 +15,17 @@
  */
 package ch.hslu.ad.sw06.exercise.n2.waitpool;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * Demonstration eines Wait-Pools.
  */
 public final class DemoWaitPool {
 
     private static final Object LOCK = new Object();
+
+    private static final Logger LOG = LogManager.getLogger(DemoWaitPool.class);
 
     /**
      * Privater Konstruktor.
@@ -37,6 +42,9 @@ public final class DemoWaitPool {
         final MyTask waiter = new MyTask(LOCK);
         new Thread(waiter).start();
         Thread.sleep(1000);
-        LOCK.notify();
+        //wait und notify müssen im selben Lock ausgeführt werden!
+        synchronized (LOCK) {
+            LOCK.notify();
+        }
     }
 }
