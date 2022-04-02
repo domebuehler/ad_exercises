@@ -14,6 +14,13 @@ class SemaphoreTest {
     }
 
     @Test
+    void testConstructorThrowsIllegalArgumentExceptionWhenLimitOverflow() {
+        assertThatThrownBy(() -> new Semaphore(4, Integer.MAX_VALUE + 1)).
+                isInstanceOf(IllegalArgumentException.class).
+                hasMessage("limit < 0");
+    }
+
+    @Test
     void testReleaseThrowsIllegalStateExceptionsWhenLimitReached() {
         Semaphore semaphore = new Semaphore(3, 3);
         assertThatThrownBy(() -> semaphore.release()).
