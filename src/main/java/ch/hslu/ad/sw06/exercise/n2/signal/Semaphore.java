@@ -39,12 +39,16 @@ public final class Semaphore {
      * @throws IllegalArgumentException wenn der Initalwert negativ ist.
      */
     public Semaphore(final int permits) throws IllegalArgumentException {
-        if (permits < 0) {
-            throw new IllegalArgumentException(permits + " < 0");
-        }
+        checkIfActualPermitsIsNegativ(permits);
         sema = permits;
         count = 0;
         this.limit = Integer.MAX_VALUE;
+    }
+
+    private void checkIfActualPermitsIsNegativ(int permits) {
+        if (permits < 0) {
+            throw new IllegalArgumentException("permits < 0");
+        }
     }
 
     /**
@@ -56,14 +60,8 @@ public final class Semaphore {
      */
     public Semaphore(final int permits, final int limit) throws IllegalArgumentException {
         this(permits);
-        if (permits > limit) {
-            throw new IllegalArgumentException("permits > limit");
-        }
-        if (limit < Integer.MAX_VALUE) {
-            this.limit = limit;
-        } else {
-            throw new IllegalArgumentException(limit + " > " + Integer.MAX_VALUE);
-        }
+        checkActualLimitParam(permits, limit);
+        this.limit = limit;
     }
 
     /**
@@ -93,12 +91,7 @@ public final class Semaphore {
      *                                        wird.
      */
     public synchronized void acquire(final int permits) throws InterruptedException {
-        if (permits > sema) {
-            throw new IllegalArgumentException("permits > sema");
-        }
-        if (permits <= 0) {
-            throw new IllegalArgumentException("permits <= 0");
-        }
+        checkParam(permits);
         for (int i = 0; i < permits; i++) {
             acquire();
         }
@@ -124,12 +117,7 @@ public final class Semaphore {
      * @param permits Anzahl Passiersignale zur Freigabe.
      */
     public synchronized void release(final int permits) throws InterruptedException {
-        if (permits > sema) {
-            throw new IllegalArgumentException("permits > sema");
-        }
-        if (permits <= 0) {
-            throw new IllegalArgumentException("permits <= 0");
-        }
+        checkParam(permits);
         for (int i = 0; i < permits; i++) {
             release();
         }
@@ -142,5 +130,31 @@ public final class Semaphore {
      */
     public synchronized int pending() {
         return count;
+    }
+
+    private void checkActualLimitParam(final int permits, final int limit) {
+        if (limit <= 0) {
+            throw new IllegalArgumentException("limit < 0");
+        }
+        if (permits > limit) {
+            throw new IllegalArgumentException("permits > limit");
+        }
+    }
+
+    private void checkParam(final int permits) {
+        checkActualPermitsParameter(permits);
+        checkActualPermitsHigherThanZero(permits);
+    }
+
+    private void checkActualPermitsParameter(final int permits) {
+        if (permits > sema) {
+            throw new IllegalArgumentException("permits > sema");
+        }
+    }
+
+    private void checkActualPermitsHigherThanZero(final int permits) {
+        if (permits <= 0) {
+            throw new IllegalArgumentException("permits <= 0");
+        }
     }
 }
