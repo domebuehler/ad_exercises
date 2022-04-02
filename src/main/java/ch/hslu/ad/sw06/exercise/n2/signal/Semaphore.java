@@ -23,6 +23,7 @@ public final class Semaphore {
 
     private int sema; // Semaphorenzähler
     private int count; // Anzahl der wartenden Threads.
+    private int limit;
 
     /**
      * Erzeugt ein Semaphore mit 0 Passiersignalen.
@@ -43,18 +44,26 @@ public final class Semaphore {
         }
         sema = permits;
         count = 0;
+        this.limit = Integer.MAX_VALUE;
     }
 
     /**
      * Erzeugt ein nach oben begrenztes Semaphore.
      *
      * @param permits Anzahl Passiersignale zur Initialisierung.
-     * @param limit maximale Anzahl der Passiersignale.
+     * @param limit   maximale Anzahl der Passiersignale.
      * @throws IllegalArgumentException wenn Argumente ungültige Werte besitzen.
      */
     public Semaphore(final int permits, final int limit) throws IllegalArgumentException {
-        this(0);
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this(permits);
+        if (permits > limit) {
+            throw new IllegalArgumentException("permits > limit");
+        }
+        if (limit < Integer.MAX_VALUE) {
+            this.limit = limit;
+        } else {
+            throw new IllegalArgumentException(limit + " > " + Integer.MAX_VALUE);
+        }
     }
 
     /**
@@ -63,7 +72,7 @@ public final class Semaphore {
      * Zähler null ist wird der Aufrufer blockiert.
      *
      * @throws java.lang.InterruptedException falls das Warten unterbrochen
-     * wird.
+     *                                        wird.
      */
     public synchronized void acquire() throws InterruptedException {
         while (sema == 0) {
@@ -81,10 +90,18 @@ public final class Semaphore {
      *
      * @param permits Anzahl Passiersignale zum Eintritt.
      * @throws java.lang.InterruptedException falls das Warten unterbrochen
-     * wird.
+     *                                        wird.
      */
     public synchronized void acquire(final int permits) throws InterruptedException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (permits > sema) {
+            throw new IllegalArgumentException("permits > sema");
+        }
+        if (permits <= 0) {
+            throw new IllegalArgumentException("permits <= 0");
+        }
+        for (int i = 0; i < permits; i++) {
+            acquire();
+        }
     }
 
     /**
@@ -93,6 +110,9 @@ public final class Semaphore {
      * wird.
      */
     public synchronized void release() {
+        if (sema == limit) {
+            throw new IllegalStateException("semaphore overflow");
+        }
         sema++;
         this.notifyAll();
     }
@@ -103,8 +123,16 @@ public final class Semaphore {
      *
      * @param permits Anzahl Passiersignale zur Freigabe.
      */
-    public synchronized void release(final int permits) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public synchronized void release(final int permits) throws InterruptedException {
+        if (permits > sema) {
+            throw new IllegalArgumentException("permits > sema");
+        }
+        if (permits <= 0) {
+            throw new IllegalArgumentException("permits <= 0");
+        }
+        for (int i = 0; i < permits; i++) {
+            release();
+        }
     }
 
     /**
