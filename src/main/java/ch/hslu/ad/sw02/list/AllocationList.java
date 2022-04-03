@@ -10,7 +10,6 @@ public final class AllocationList {
         return this.listCount;
     }
 
-    //Exception-Handling z.B. bei Null oder leerer Liste!
     public void add(final Allocation allocation) {
         this.head = new Node(head, allocation);
         this.listCount++;
@@ -28,10 +27,6 @@ public final class AllocationList {
         return allocation.equals(this.head.getContent());
     }
 
-    /**
-     * Hallo
-     * @return
-     */
     public Allocation pop() {
         Allocation allocationToBePopped = this.head.getContent();
         this.head = this.head.getNext();
