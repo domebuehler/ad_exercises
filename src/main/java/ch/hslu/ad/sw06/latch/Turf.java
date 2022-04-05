@@ -36,13 +36,12 @@ public final class Turf {
      * @param args not used.
      */
     public static void main(final String[] args) throws InterruptedException {
-        Race race = new Race(10);
+        Race race = new Race(20);
 
         //ready - steady - go
         LOG.info("Start...");
         race.startRace();
 
-        //interrupt
         Thread.sleep(200);
         race.interruptRace();
     }

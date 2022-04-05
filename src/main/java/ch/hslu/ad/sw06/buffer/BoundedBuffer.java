@@ -52,36 +52,16 @@ public final class BoundedBuffer<T> implements Buffer<T> {
 
     @Override
     public void put(final T elem) throws InterruptedException {
-        putSema.acquire();
-        synchronized (queue) {
-            queue.addFirst(elem);
-        }
-        takeSema.release();
+        put(elem, 0);
     }
 
     @Override
     public T get() throws InterruptedException {
-        takeSema.acquire();
-        T elem;
-        synchronized (queue) {
-            elem = queue.removeLast();
-        }
-        putSema.release();
-        return elem;
+        return get(0);
     }
 
     @Override
     public boolean put(T elem, long millis) throws InterruptedException {
-        /*while (this.full()) {
-            waiting(millis);
-            if (this.full()) {
-                return false;
-            }
-        }
-        this.put(elem);
-        return true;*/
-
-
         if (!putSema.tryAcquire(millis, TimeUnit.MILLISECONDS)) {
             return false;
         }
@@ -95,14 +75,6 @@ public final class BoundedBuffer<T> implements Buffer<T> {
 
     @Override
     public T get(long millis) throws InterruptedException {
-        /*while (this.empty()) {
-            waiting(millis);
-            if (this.empty()) {
-                return null;
-            }
-        }
-        return this.get();*/
-
         if (!this.takeSema.tryAcquire(millis, TimeUnit.MILLISECONDS)) {
             return null;
         }
@@ -115,20 +87,18 @@ public final class BoundedBuffer<T> implements Buffer<T> {
         return elem;
     }
 
-    private void waiting(long millis) throws InterruptedException {
-        synchronized (this) {
-            wait(millis);
+    @Override
+    public T first() throws InterruptedException {
+        synchronized (this.queue) {
+            return this.queue.getFirst();
         }
     }
 
     @Override
-    public T first() throws InterruptedException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public T last() throws InterruptedException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        synchronized (this.queue) {
+            return this.queue.getLast();
+        }
     }
 
     @Override
