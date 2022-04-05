@@ -15,10 +15,11 @@
  */
 package ch.hslu.ad.sw07.prime;
 
-import java.math.BigInteger;
-import java.util.Random;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.math.BigInteger;
+import java.util.Random;
 
 /**
  * 100 grosse Primzahlen produzieren.
@@ -27,17 +28,10 @@ public final class PrimeCheckSerial {
 
     private static final Logger LOG = LogManager.getLogger(PrimeCheckSerial.class);
 
-    /**
-     * Privater Konstruktor.
-     */
-    public PrimeCheckSerial() {
+
+    private PrimeCheckSerial() {
     }
 
-    /**
-     * Main-Demo.
-     *
-     * @param args not used.
-     */
     public static void main(String[] args) {
         int n = 1;
         long start = System.currentTimeMillis();
@@ -50,5 +44,6 @@ public final class PrimeCheckSerial {
         }
         long end = System.currentTimeMillis();
         LOG.info("finished after: {} ms", end - start);
+        //~ 20s bei 30 % Auslastung
     }
 }
