@@ -1,11 +1,10 @@
 package ch.hslu.ad.sw07.prime;
 
-import ch.hslu.ad.sw01.runtime.Task;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.math.BigInteger;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -17,7 +16,7 @@ public final class BigPrimeList {
 
     private static final Logger LOG = LogManager.getLogger(BigPrimeList.class);
 
-    private static final List<BigInteger> primes = new LinkedList<>();
+    private static final List<BigInteger> primes = Collections.synchronizedList(new LinkedList<>());
     private static int targetValueOfPrimes;
     private static final List<FutureTask<BigInteger>> tasks = new LinkedList<>();
     private static ExecutorService executorService;
@@ -25,7 +24,7 @@ public final class BigPrimeList {
     public static List<BigInteger> generateBigPrimeList(int listSize) {
         targetValueOfPrimes = listSize;
         generatePrimes();
-        return primes;
+        return Collections.unmodifiableList(primes);
     }
 
     private static void generatePrimes() {
