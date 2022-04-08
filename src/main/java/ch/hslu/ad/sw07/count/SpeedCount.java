@@ -56,7 +56,7 @@ public final class SpeedCount {
      * @param args not used.
      */
     public static void main(final String args[]) {
-        final int passes = 1_000;
+        final int passes = 10_000;
         final int tester = 10;
         final int counts = 1_000;
         final Counter counterSync = new SynchronizedCounter();
@@ -70,7 +70,7 @@ public final class SpeedCount {
             sumAtom += speedTest(counterAtom, counts, tester);
         }
         if (counterSync.get() == 0) {
-            LOG.info("Sync counter ok"); //~1.2ms
+            LOG.info("Sync counter ok"); //~1ms
             LOG.info("Sync counter average test duration = {} ms", sumSync / ((float) passes * 1_000_000));
         } else {
             LOG.info("Sync counter failed");
