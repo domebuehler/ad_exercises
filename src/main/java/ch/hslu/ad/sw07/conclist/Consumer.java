@@ -16,6 +16,7 @@
 package ch.hslu.ad.sw07.conclist;
 
 import java.util.List;
+import java.util.Queue;
 import java.util.concurrent.Callable;
 
 /**
@@ -23,23 +24,54 @@ import java.util.concurrent.Callable;
  */
 public final class Consumer implements Callable<Long> {
 
-    private final List<Integer> list;
+    private List<Integer> list;
+    private Queue<Integer> queue;
+    private boolean queueFlag = false;
 
     /**
      * Erzeugt einen Konsumenten, der soviel Integer-Werte ausliest, wie er nur kann.
+     *
      * @param list Queue zum Lesen der Integer-Werte.
      */
     public Consumer(final List<Integer> list) {
         this.list = list;
     }
 
+    public Consumer(final Queue<Integer> queue) {
+        this.queue = queue;
+        this.queueFlag = true;
+    }
+
     /**
      * Liefert die Summe aller ausgelesener Werte.
+     *
      * @return Summe.
      * @throws java.lang.Exception falls Ausnahmen passieren.
      */
     @Override
     public Long call() throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        long sum;
+        if (queueFlag) {
+            sum = handleQueue();
+        } else {
+            sum = handleList();
+        }
+        return sum;
+    }
+
+    private Long handleList() {
+        long sum = 0;
+        for (Integer integer : list) {
+            sum += integer;
+        }
+        return sum;
+    }
+
+    private Long handleQueue() throws NullPointerException {
+        long sum = 0;
+        for (Integer integer : queue) {
+            sum += integer;
+        }
+        return sum;
     }
 }

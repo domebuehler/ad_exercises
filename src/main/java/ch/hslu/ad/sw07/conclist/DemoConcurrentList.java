@@ -15,10 +15,7 @@
  */
 package ch.hslu.ad.sw07.conclist;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -29,28 +26,22 @@ import org.apache.logging.log4j.Logger;
 /**
  * Demonstration einer synchronisierten List mit n Producer und m Consumer.
  */
+@SuppressWarnings("DuplicatedCode")
 public final class DemoConcurrentList {
 
     private static final Logger LOG = LogManager.getLogger(DemoConcurrentList.class);
 
-    /**
-     * Privater Konstruktor.
-     */
     private DemoConcurrentList() {
     }
 
-    /**
-     * Main-Demo.
-     * @param args not used.
-     * @throws InterruptedException wenn das warten unterbrochen wird.
-     * @throws java.util.concurrent.ExecutionException bei Excecution-Fehler.
-     */
     public static void main(final String args[]) throws InterruptedException, ExecutionException {
-        final List<Integer> list = new LinkedList<>();
+
+        final List<Integer> list = Collections.synchronizedList(new LinkedList<>());
         final ExecutorService executor = Executors.newCachedThreadPool();
         final List<Future<Long>> futures = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
-            futures.add(executor.submit(new Producer(list, 1000)));
+        long start = System.currentTimeMillis();
+        for (int i = 0; i < 1000; i++) {
+            futures.add(executor.submit(new Producer(list, 10_000)));
         }
         Iterator<Future<Long>> iterator = futures.iterator();
         long totProd = 0;
@@ -63,5 +54,7 @@ public final class DemoConcurrentList {
         long totCons = executor.submit(new Consumer(list)).get();
         LOG.info("cons tot = " + totCons);
         executor.shutdown();
+        long runtime = System.currentTimeMillis() - start;
+        LOG.info("list finished after: {} ms", runtime);
     }
 }

@@ -16,6 +16,7 @@
 package ch.hslu.ad.sw07.conclist;
 
 import java.util.List;
+import java.util.Queue;
 import java.util.concurrent.Callable;
 
 /**
@@ -23,8 +24,11 @@ import java.util.concurrent.Callable;
  */
 public final class Producer implements Callable<Long> {
 
-    private final List<Integer> list;
+    private List<Integer> list;
+    private Queue<Integer> queue;
+    private boolean queueFlag = false;
     private final int maxRange;
+    private long sum;
 
     /**
      * Erzeugt einen Produzent, der eine bestimmte Anzahl Integer-Werte produziert.
@@ -36,6 +40,12 @@ public final class Producer implements Callable<Long> {
         this.maxRange = max;
     }
 
+    public Producer(final Queue<Integer> queue, final int maxRange){
+        this.queue = queue;
+        this.queueFlag = true;
+        this.maxRange = maxRange;
+    }
+
     /**
      * Liefert die Summe aller zusammengezählter Integer Werte.
      * @return Summe.
@@ -43,6 +53,27 @@ public final class Producer implements Callable<Long> {
      */
     @Override
     public Long call() throws Exception {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (queueFlag) {
+            sum = handleQueue();
+        } else {
+            sum = handleList();
+        }
+        return this.sum;
+    }
+
+    private Long handleList() {
+        for (int i = 1; i <= maxRange; i++) {
+            this.sum += i;
+            this.list.add(i);
+        }
+        return this.sum;
+    }
+
+    private Long handleQueue() {
+        for (int i = 1; i <= maxRange; i++) {
+            this.sum += i;
+            this.queue.offer(i);
+        }
+        return this.sum;
     }
 }
