@@ -21,7 +21,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * Speed-Test für unterschiedlich impementierte Counters.
+ * Speed-Test für unterschiedlich implementierte Counters.
  */
 public final class SpeedCount {
 
@@ -42,10 +42,11 @@ public final class SpeedCount {
      */
     public static long speedTest(Counter counter, int counts, int tester) {
         final ExecutorService executor = Executors.newCachedThreadPool();
+        long start = System.nanoTime();
         for (int i = 0; i < tester; i++) {
             executor.submit(new CountTask(counter, counts));
         }
-        long duration = -1L;
+        long duration = System.nanoTime() - start;
         executor.shutdown();
         return duration;
     }
@@ -55,8 +56,8 @@ public final class SpeedCount {
      * @param args not used.
      */
     public static void main(final String args[]) {
-        final int passes = 1;
-        final int tester = 1;
+        final int passes = 1_000;
+        final int tester = 10;
         final int counts = 1_000;
         final Counter counterSync = new SynchronizedCounter();
         long sumSync = 0;
@@ -69,14 +70,14 @@ public final class SpeedCount {
             sumAtom += speedTest(counterAtom, counts, tester);
         }
         if (counterSync.get() == 0) {
-            LOG.info("Sync counter ok");
-            LOG.info("Sync counter average test duration = {} ms", sumSync / (float) passes);
+            LOG.info("Sync counter ok"); //~1.2ms
+            LOG.info("Sync counter average test duration = {} ms", sumSync / ((float) passes * 1_000_000));
         } else {
             LOG.info("Sync counter failed");
         }
         if (counterAtom.get() == 0) {
-            LOG.info("Atom counter ok");
-            LOG.info("Atom counter average test duration = {} ms", sumAtom / (float) passes);
+            LOG.info("Atom counter ok"); //~0.6ms
+            LOG.info("Atom counter average test duration = {} ms", sumAtom / ((float) passes * 1_000_000));
         } else {
             LOG.info("Atom counter failed");
         }

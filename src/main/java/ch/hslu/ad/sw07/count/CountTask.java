@@ -28,7 +28,7 @@ public class CountTask implements Callable<Integer> {
     /**
      * Erzeugt eine Zähl-Aufgabe.
      * @param counter zu testender Counter.
-     * @param counts Anzahl Zähldruchläufe.
+     * @param counts Anzahl Zähldurchläufe.
      */
     public CountTask(Counter counter, int counts) {
         this.counter = counter;

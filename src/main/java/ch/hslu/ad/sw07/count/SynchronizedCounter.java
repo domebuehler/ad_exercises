@@ -20,33 +20,26 @@ package ch.hslu.ad.sw07.count;
  */
 public final class SynchronizedCounter implements Counter {
 
-    /**
-     * Erzeugt einen Zähler mit Zählerstand 0.
-     */
-    public SynchronizedCounter() {
-    }
+    private int count = 0;
 
-    /**
-     * see ch.hslu.ad.exercise.sw07.count.Counter#increment()
-     */
     @Override
     public void increment() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        synchronized (this) {
+            this.count++;
+        }
     }
 
-    /**
-     * see ch.hslu.ad.exercise.sw07.count.Counter#decrement()
-     */
     @Override
     public void decrement() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        synchronized (this) {
+            this.count--;
+        }
     }
 
-    /**
-     * see ch.hslu.ad.exercise.sw07.count.Counter#get()
-     */
     @Override
     public int get() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        synchronized (this) {
+            return this.count;
+        }
     }
 }
