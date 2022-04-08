@@ -22,6 +22,7 @@ import org.apache.logging.log4j.Logger;
 /**
  * Demonstration der Bankgeschäfte - Aufgabe 2 - N1_EX_ThreadsSynch.
  */
+@SuppressWarnings("DuplicatedCode")
 public final class DemoBankAccount {
 
     private static final Logger LOG = LogManager.getLogger(DemoBankAccount.class);
@@ -54,11 +55,13 @@ public final class DemoBankAccount {
         final ArrayList<BankAccount> source = new ArrayList<>();
         final ArrayList<BankAccount> target = new ArrayList<>();
         final int amount = 100_000;
-        final int number = 100;
+        final int number = 1_000;
         for (int i = 0; i < number; i++) {
             source.add(new BankAccount(amount));
             target.add(new BankAccount());
         }
+
+        long start = System.currentTimeMillis();
         final Thread[] threads = new Thread[number * 2];
         for (int i = 0; i < number; i++) {
             threads[i] = new Thread(new AccountTask(source.get(i), target.get(i), amount));
@@ -69,9 +72,11 @@ public final class DemoBankAccount {
         }
 
         waitForCompletion(threads);
+        long duration = System.currentTimeMillis() - start;
         LOG.info("Bank accounts after transfers");
         for (int i = 0; i < number; i++) {
             LOG.info("source({}) = {}; target({}) = {};", i, source.get(i).getBalance(), i, target.get(i).getBalance());
         }
+        LOG.info("duration = {} ms", duration);
     }
 }
