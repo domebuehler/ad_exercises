@@ -15,6 +15,8 @@
  */
 package ch.hslu.ad.sw07.bank;
 
+import java.util.concurrent.Callable;
+
 /**
  * Bankauftrag, der der von einem Quell-Bankkonto einen Betrag an ein Ziel-Bankkonto überweist. Die
  * Überweisung wird in Mircoüberweisungen aufgeteilt.

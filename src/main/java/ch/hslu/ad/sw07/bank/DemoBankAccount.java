@@ -15,43 +15,59 @@
  */
 package ch.hslu.ad.sw07.bank;
 
-import java.util.ArrayList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Demonstration der Bankgeschäfte - Aufgabe 4 - N3_EX_WeiterführendeKonzepte.
  */
+@SuppressWarnings("DuplicatedCode")
 public final class DemoBankAccount {
 
     private static final Logger LOG = LogManager.getLogger(DemoBankAccount.class);
+    final static ArrayList<BankAccount> source = new ArrayList<>();
+    final static ArrayList<BankAccount> target = new ArrayList<>();
+    final static int AMOUNT = 100_000;
+    final static int NUMBER = 1_000;
+
+    public static void main(String[] args) throws InterruptedException {
+        initTest();
+        long start = System.currentTimeMillis();
+        Thread executeThread = new Thread(() -> {
+            ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() + 1);
+            for (int i = 0; i < NUMBER; i++) {
+                executorService.execute(new AccountTask(source.get(i), target.get(i), AMOUNT));
+                executorService.execute(new AccountTask(target.get(i), source.get(i), AMOUNT));
+            }
+            executorService.shutdown();
+        });
+        executeThread.start();
+        executeThread.join();
+
+        long duration = System.currentTimeMillis() - start;
+
+        LOG.info("Bank accounts after transfers");
+        for (int i = 0; i < NUMBER; i++) {
+            LOG.info("source({}) = {}; target({}) = {};", i, source.get(i).getBalance(), i, target.get(i).getBalance());
+        }
+        LOG.info("duration = {} ms", duration);
+    }
+
+    private static void initTest() {
+
+        for (int i = 0; i < NUMBER; i++) {
+            source.add(new BankAccount(AMOUNT));
+            target.add(new BankAccount());
+        }
+    }
 
     /**
      * Privater Konstruktor.
      */
     private DemoBankAccount() {
-    }
-
-    /**
-     * Main-Demo.
-     *
-     * @param args not used.
-     * @throws InterruptedException wenn Warten unterbrochen wird.
-     */
-    public static void main(String[] args) throws InterruptedException {
-        final ArrayList<BankAccount> source = new ArrayList<>();
-        final ArrayList<BankAccount> target = new ArrayList<>();
-        final int amount = 100_000;
-        final int number = 5;
-        for (int i = 0; i < number; i++) {
-            source.add(new BankAccount(amount));
-            target.add(new BankAccount());
-        }
-        // Account Tasks starten und...
-        // ...warten bis alle Transaktionen abgeschlossen sind.
-        LOG.info("Bank accounts after transfers");
-        for (int i = 0; i < number; i++) {
-            LOG.info("source({}) = {}; target({}) = {};", i, source.get(i).getBalance(), i, target.get(i).getBalance());
-        }
     }
 }
