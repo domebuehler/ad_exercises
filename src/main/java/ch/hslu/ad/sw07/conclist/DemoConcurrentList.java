@@ -41,7 +41,7 @@ public final class DemoConcurrentList {
         final List<Future<Long>> futures = new ArrayList<>();
         long start = System.currentTimeMillis();
         for (int i = 0; i < 1000; i++) {
-            futures.add(executor.submit(new Producer(list, 10_000)));
+            futures.add(executor.submit(new Producer(list, 8574)));
         }
         Iterator<Future<Long>> iterator = futures.iterator();
         long totProd = 0;

@@ -11,13 +11,17 @@ public class DemoBlockingQueue {
 
     private static final Logger LOG = LogManager.getLogger(DemoConcurrentList.class);
 
+    //Blocking Queue ist dazu da ihre Plätze mehrmals zu beschreiben un zu lesen.
+    //Dementsprechend wird blockiert.
+    //Für diese Aufgabenstellung ist eine SynchronizedList besser geeignet bzw. schneller, da nur einmaliges Schreiben und Lesen.
+
     public static void main(String[] args) throws ExecutionException, InterruptedException {
         final Queue<Integer> queue = new LinkedBlockingDeque<>();
         final ExecutorService executor = Executors.newCachedThreadPool();
         final List<Future<Long>> futures = new ArrayList<>();
         long start = System.currentTimeMillis();
         for (int i = 0; i < 1000; i++) {
-            futures.add(executor.submit(new Producer(queue, 10_000)));
+            futures.add(executor.submit(new Producer(queue, 8574)));
         }
         Iterator<Future<Long>> iterator = futures.iterator();
         long totProd = 0;
