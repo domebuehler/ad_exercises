@@ -24,6 +24,7 @@ import java.util.concurrent.Executors;
 
 /**
  * Demonstration der Bankgeschäfte - Aufgabe 4 - N3_EX_WeiterführendeKonzepte.
+ * Auch bei diesem Beispiel erkennt man, dass die Lösung mit Atom-Variabel einiges schneller ist (vgl. SW05)
  */
 @SuppressWarnings("DuplicatedCode")
 public final class DemoBankAccount {
@@ -31,23 +32,22 @@ public final class DemoBankAccount {
     private static final Logger LOG = LogManager.getLogger(DemoBankAccount.class);
     final static ArrayList<BankAccount> source = new ArrayList<>();
     final static ArrayList<BankAccount> target = new ArrayList<>();
-    final static int AMOUNT = 100_000;
-    final static int NUMBER = 1_000;
+    final static int AMOUNT = 3_645_324;
+    final static int NUMBER = 10;
 
     public static void main(String[] args) throws InterruptedException {
         initTest();
         long start = System.currentTimeMillis();
-        Thread executeThread = new Thread(() -> {
-            ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() + 1);
-            for (int i = 0; i < NUMBER; i++) {
-                executorService.execute(new AccountTask(source.get(i), target.get(i), AMOUNT));
-                executorService.execute(new AccountTask(target.get(i), source.get(i), AMOUNT));
-            }
-            executorService.shutdown();
-        });
-        executeThread.start();
-        executeThread.join();
 
+        ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() + 1);
+        for (int i = 0; i < NUMBER; i++) {
+            executorService.execute(new AccountTask(source.get(i), target.get(i), AMOUNT));
+            executorService.execute(new AccountTask(target.get(i), source.get(i), AMOUNT));
+        }
+        executorService.shutdown();
+        while(!executorService.isTerminated()) {
+
+        }
         long duration = System.currentTimeMillis() - start;
 
         LOG.info("Bank accounts after transfers");
@@ -65,9 +65,6 @@ public final class DemoBankAccount {
         }
     }
 
-    /**
-     * Privater Konstruktor.
-     */
     private DemoBankAccount() {
     }
 }

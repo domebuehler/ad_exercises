@@ -15,9 +15,10 @@
  */
 package ch.hslu.ad.sw05.exercise.n1.bank;
 
-import java.util.ArrayList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.ArrayList;
 
 /**
  * Demonstration der Bankgeschäfte - Aufgabe 2 - N1_EX_ThreadsSynch.
@@ -54,8 +55,9 @@ public final class DemoBankAccount {
     public static void main(String[] args) throws InterruptedException {
         final ArrayList<BankAccount> source = new ArrayList<>();
         final ArrayList<BankAccount> target = new ArrayList<>();
-        final int amount = 100_000;
-        final int number = 1_000;
+        final int amount = 3_645_324;
+        final int number = 10;
+
         for (int i = 0; i < number; i++) {
             source.add(new BankAccount(amount));
             target.add(new BankAccount());
