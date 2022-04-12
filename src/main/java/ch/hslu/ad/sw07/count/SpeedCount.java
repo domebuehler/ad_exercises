@@ -52,13 +52,14 @@ public final class SpeedCount {
     }
 
     /**
-     * Main-Counter-Test.
-     * @param args not used.
+     * Speedtest Ergebnisse:
+     * Der Atomic-Counter ist rund 30 - 50 % schneller als der Sync-Counter!
+     * Bei Atomic-Variablen wird direkt der Bus auf der HW blockiert.
      */
-    public static void main(final String args[]) {
-        final int passes = 10_000;
+    public static void main(final String[] args) {
+        final int passes = 1_000;
         final int tester = 10;
-        final int counts = 1_000;
+        final int counts = 1245;
         final Counter counterSync = new SynchronizedCounter();
         long sumSync = 0;
         for (int i = 0; i < passes; i++) {
