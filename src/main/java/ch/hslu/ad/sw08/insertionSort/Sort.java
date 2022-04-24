@@ -1,8 +1,5 @@
 package ch.hslu.ad.sw08.insertionSort;
 
-import java.util.Arrays;
-import java.util.Collections;
-
 public final class Sort {
 
     public static void insertionSort(final int[] toBeSorted) {

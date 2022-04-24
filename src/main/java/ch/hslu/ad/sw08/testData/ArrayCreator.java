@@ -1,7 +1,5 @@
 package ch.hslu.ad.sw08.testData;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Random;
 
 public final class ArrayCreator {
