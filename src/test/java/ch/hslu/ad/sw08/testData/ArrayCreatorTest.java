@@ -21,14 +21,14 @@ class ArrayCreatorTest {
 
     @Test
     void testNewSortedArray() {
-        int[] intArray = ArrayCreator.newRandomSortedIntArray(10);
+        int[] intArray = ArrayCreator.newSortedIntArray(10);
         LOG.info("Sorted: " + Arrays.toString(intArray));
         assertThat(intArray.length).isEqualTo(10);
     }
 
     @Test
     void testNewReverseSortedArray() {
-        int[] intArray = ArrayCreator.newRandomReverseSortedIntArray(10);
+        int[] intArray = ArrayCreator.newReverseSortedIntArray(10);
         LOG.info("Reversed: " + Arrays.toString(intArray));
         assertThat(intArray.length).isEqualTo(10);
     }

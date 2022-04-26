@@ -18,7 +18,7 @@ public final class ArrayCreator {
         return created;
     }
 
-    public static int[] newRandomSortedIntArray(final int numberOfElements) {
+    public static int[] newSortedIntArray(final int numberOfElements) {
         int[] created = new int[numberOfElements];
         for (int i = 0; i < numberOfElements; i++) {
             created[i] = i + 1;
@@ -26,7 +26,7 @@ public final class ArrayCreator {
         return created;
     }
 
-    public static int[] newRandomReverseSortedIntArray(final int numberOfElements) {
+    public static int[] newReverseSortedIntArray(final int numberOfElements) {
         int[] created = new int[numberOfElements];
         for (int i = 1; i <= numberOfElements; i++) {
             created[numberOfElements - i] = i;

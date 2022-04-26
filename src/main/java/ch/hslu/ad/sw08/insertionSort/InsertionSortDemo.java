@@ -12,8 +12,8 @@ public final class InsertionSortDemo {
 
     public static void main(String[] args) {
         int[] randomIntArray = ArrayCreator.newRandomIntArray(SIZE);
-        int[] sortedIntArray = ArrayCreator.newRandomSortedIntArray(SIZE);
-        int[] reverseSortedIntArray = ArrayCreator.newRandomReverseSortedIntArray(SIZE);
+        int[] sortedIntArray = ArrayCreator.newSortedIntArray(SIZE);
+        int[] reverseSortedIntArray = ArrayCreator.newReverseSortedIntArray(SIZE);
 
         long start = System.currentTimeMillis();
         Sort.insertionSort(randomIntArray);

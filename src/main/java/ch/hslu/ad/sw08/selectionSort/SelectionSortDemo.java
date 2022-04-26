@@ -11,8 +11,8 @@ public final class SelectionSortDemo {
     private static final int SIZE = 100_000;
 
     public static void main(String[] args) {
-        int[] worst = ArrayCreator.newRandomReverseSortedIntArray(SIZE);
-        int[] best = ArrayCreator.newRandomSortedIntArray(SIZE);
+        int[] worst = ArrayCreator.newReverseSortedIntArray(SIZE);
+        int[] best = ArrayCreator.newSortedIntArray(SIZE);
 
         long start = System.currentTimeMillis();
         Sort.selectionSort(worst);
