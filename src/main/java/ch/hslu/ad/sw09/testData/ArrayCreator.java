@@ -26,7 +26,7 @@ public final class ArrayCreator {
     public void createNewMasterIntArray(final int length) {
         this.masterIntArray = new int[length];
         for (int i = 0; i < length; i++) {
-            this.masterIntArray[i] = this.random.nextInt();
+            this.masterIntArray[i] = Math.abs(this.random.nextInt());
         }
     }
 
