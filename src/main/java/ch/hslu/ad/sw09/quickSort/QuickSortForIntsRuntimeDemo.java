@@ -75,7 +75,8 @@ public final class QuickSortForIntsRuntimeDemo {
     private static void compareRuntimes() {
         LOG.info("runtime for n = {}: {} ms", SIZE, averageRuntimeSingle);
         LOG.info("runtime for n = {}: {} ms", SIZE * FACTOR, averageRuntimeDouble);
-        LOG.info("expected O(log(n) * n): {}\tactual: {}", Math.log(FACTOR) * FACTOR,
-                averageRuntimeDouble / averageRuntimeSingle);
+        LOG.info("best case - expected O(log(n) * n): {}", Math.log(FACTOR) * FACTOR);
+        LOG.info("average case - ~ 1.4 * best case: {}", (Math.log(FACTOR) * FACTOR) * 1.4);
+        LOG.info("actual: {}", averageRuntimeDouble / averageRuntimeSingle);
     }
 }
