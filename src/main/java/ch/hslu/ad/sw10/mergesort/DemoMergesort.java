@@ -27,43 +27,73 @@ import org.apache.logging.log4j.Logger;
  */
 public final class DemoMergesort {
 
+    static final int SIZE = 300_000_000;
+    static final int[] ARRAY = new int[SIZE];
+    static final ForkJoinPool POOL = new ForkJoinPool();
+    static SumTask sumTask;
+    static long start;
+    static long duration;
+    static long[] durationArray = new long[20];
+    static long result;
+
     private static final Logger LOG = LogManager.getLogger(DemoMergesort.class);
 
-    /**
-     * Privater Konstruktor.
-     */
-    private DemoMergesort() {
+    private DemoMergesort() {}
+
+    public static void main(final String[] args) {
+        int iter = 10;
+        for (int i = 0; i < iter; i++) {
+            parallelMergeSort();
+            durationArray[i] = duration;
+        }
+        double sum = 0;
+        for (int i = 0; i < iter; i++) {
+            sum += durationArray[i];
+        }
+        LOG.info("average parallel: {} ms", sum / iter);
+
+        for (int i = 0; i < iter; i++) {
+            serialMergeSort();
+            durationArray[i + iter] = duration;
+        }
+        sum = 0;
+        for (int i = 0; i < iter; i++) {
+            sum += durationArray[i + iter];
+        }
+        LOG.info("average serial: {} ms", sum / iter);
     }
 
-    /**
-     * Main-Demo.
-     *
-     * @param args not used.
-     */
-    public static void main(final String[] args) {
-        final int size = 300_000;
-        final int[] array = new int[size];
-        final ForkJoinPool pool = new ForkJoinPool();
-        RandomInitTask initTask = new RandomInitTask(array, 100);
-        pool.invoke(initTask);
-        SumTask sumTask = new SumTask(array);
-        long result = pool.invoke(sumTask);
-        LOG.info("Init. Checksum  : {}", result);
-        final MergesortTask sortTask = new MergesortTask(array);
-        pool.invoke(sortTask);
-        LOG.info("Conc. Mergesort : {} sec.", '?');
-        sumTask = new SumTask(array);
-        result = pool.invoke(sumTask);
+    private static void parallelMergeSort() {
+        randomize();
+        sumTask = new SumTask(ARRAY);
+        result = POOL.invoke(sumTask);
+        LOG.info("Initial Checksum  : {}", result);
+        final MergesortTask sortTask = new MergesortTask(ARRAY);
+        start = System.currentTimeMillis();
+        POOL.invoke(sortTask);
+        duration = System.currentTimeMillis() - start;
+        LOG.info("Concurrent Mergesort: {} ms", duration);
+        sumTask = new SumTask(ARRAY);
+        result = POOL.invoke(sumTask);
         LOG.info("Merge Checksum  : {}", result);
-        initTask = new RandomInitTask(array, 100);
-        pool.invoke(initTask);
-        sumTask = new SumTask(array);
-        result = pool.invoke(sumTask);
-        LOG.info("Init. checksum  : {}", result);
-        MergesortRecursive.mergeSort(array);
-        LOG.info("MergesortRec.   : {} sec.", '?');
-        sumTask = new SumTask(array);
-        result = pool.invoke(sumTask);
+    }
+
+    private static void serialMergeSort() {
+        randomize();
+        sumTask = new SumTask(ARRAY);
+        result = POOL.invoke(sumTask);
+        LOG.info("Initial checksum  : {}", result);
+        start = System.currentTimeMillis();
+        MergesortRecursive.mergeSort(ARRAY);
+        duration = System.currentTimeMillis() - start;
+        LOG.info("Serial Mergesort   : {} ms", duration);
+        sumTask = new SumTask(ARRAY);
+        result = POOL.invoke(sumTask);
         LOG.info("Sort checksum   : {}", result);
+    }
+
+    private static void randomize() {
+        RandomInitTask initTask = new RandomInitTask(ARRAY, 100);
+        POOL.invoke(initTask);
     }
 }
