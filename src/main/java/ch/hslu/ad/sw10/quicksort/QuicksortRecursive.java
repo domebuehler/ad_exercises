@@ -20,43 +20,41 @@ package ch.hslu.ad.sw10.quicksort;
  */
 public class QuicksortRecursive {
 
-    /**
-     * public method exposed to client, sorts given array using QuickSort
-     * Algorithm in Java.
-     *
-     * @param array input array.
-     */
-    public static void quicksort(int[] array) {
-        QuicksortRecursive.quicksort(array, 0, array.length - 1);
+    public static void quickSortForInts(final int[] a) {
+        int left = 0;
+        int right = a.length - 1;
+        quickSortForInts(a, left, right);
     }
 
-    /**
-     * Recursive quicksort logic.
-     *
-     * @param array input array.
-     * @param startIdx start index of the array.
-     * @param endIdx end index of the array.
-     */
-    public static void quicksort(int[] array, int startIdx, int endIdx) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private static void quickSortForInts(final int[] a, final int left, final int right) {
+        int up = left; // linke Grenze
+        int down = right - 1; // rechte Grenze (ohne Trennelement)
+        int t = a[right]; // rechtes Element als Trennelement
+        boolean allChecked = false;
+        do {
+            while (a[up] < t) {
+                up++; // suche grösseres (>=) Element von links an
+            }
+            while ((a[down] >= t) && (down > up)) {
+                down--; // suche echt kleineres (<) Element von rechts an
+            }
+            if (down > up) { // solange keine Überschneidung
+                exchangeInts(a, up, down);
+                up++;
+                down--; // linke und rechte Grenze verschieben
+            } else {
+                allChecked = true; // Austauschen beendet
+            }
+        } while (!allChecked);
+        exchangeInts(a, up, right); // Trennelement an endgültige Position (a[up])
+        if (left < (up - 1)) quickSortForInts(a, left, (up - 1)); // linke Hälfte
+        if ((up + 1) < right) quickSortForInts(a, (up + 1), right); // rechte Hälfte, ohne T’Elt.
     }
 
-    /**
-     * Divides array from pivot, left side contains elements less than Pivot
-     * while right side contains elements greater than pivot.
-     *
-     * @param array array to partitioned.
-     * @param left lower bound of the array.
-     * @param right upper bound of the array.
-     * @return the partition index.
-     */
-    public static int partition(int[] array, int left, int right) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    private static void exchange(final int[] array, final int i, final int j) {
-        int temp = array[i];
-        array[i] = array[j];
-        array[j] = temp;
+    private static void exchangeInts(final int[] a, final int firstIndex, final int secondIndex) {
+        int tmp;
+        tmp = a[firstIndex];
+        a[firstIndex] = a[secondIndex];
+        a[secondIndex] = tmp;
     }
 }

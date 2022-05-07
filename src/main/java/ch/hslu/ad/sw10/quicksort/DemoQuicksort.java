@@ -28,53 +28,56 @@ import org.apache.logging.log4j.Logger;
  */
 public final class DemoQuicksort {
 
+    private static long start;
+    private static long duration;
+
     private static final Logger LOG = LogManager.getLogger(DemoQuicksort.class);
 
-    /**
-     * Privater Konstruktor.
-     */
     private DemoQuicksort() {
     }
 
-    /**
-     * Main-Demo.
-     *
-     * @param args not used.
-     */
     public static void main(final String[] args) {
-        final int size = 300_000_000;
+        final int size = 30_000_000;
         final int[] array = new int[size];
         final ForkJoinPool pool = new ForkJoinPool();
-        RandomInitTask initTask = new RandomInitTask(array, 100);
+        RandomInitTask initTask = new RandomInitTask(array, 100_000);
         pool.invoke(initTask);
         SumTask sumTask = new SumTask(array);
         long result = pool.invoke(sumTask);
-        LOG.info("Init. Checksum : {}", result);
+        LOG.info("Initial Checksum : {}", result);
         final QuicksortTask sortTask = new QuicksortTask(array);
+        start = System.currentTimeMillis();
         pool.invoke(sortTask);
-        LOG.info("QuicksortTask  : {} sec.", '?');
+        duration = System.currentTimeMillis() - start;
+        LOG.info("QuicksortTask  : {} ms", duration);
         sumTask = new SumTask(array);
         result = pool.invoke(sumTask);
-        LOG.info("Conc. Checksum : {}", result);
-        initTask = new RandomInitTask(array, 100);
+        LOG.info("Concurrent Checksum : {}", result);
+
+        initTask = new RandomInitTask(array, 100_000);
         pool.invoke(initTask);
         sumTask = new SumTask(array);
         result = pool.invoke(sumTask);
-        LOG.info("Init. Checksum : {}", result);
-        QuicksortRecursive.quicksort(array);
-        LOG.info("QuicksortRec.  : {} sec.", '?');
+        LOG.info("Initial Checksum : {}", result);
+        start = System.currentTimeMillis();
+        QuicksortRecursive.quickSortForInts(array);
+        duration = System.currentTimeMillis() - start;
+        LOG.info("Serial Quicksort  : {} ms", duration);
         sumTask = new SumTask(array);
         result = pool.invoke(sumTask);
-        LOG.info("Recu. Checksum : {}", result);
-        initTask = new RandomInitTask(array, 100);
+        LOG.info("Serial Checksum : {}", result);
+
+        initTask = new RandomInitTask(array, 100_000);
         pool.invoke(initTask);
         sumTask = new SumTask(array);
         result = pool.invoke(sumTask);
-        LOG.info("Init. checksum : {}", result);
+        LOG.info("Initial checksum : {}", result);
+        start = System.currentTimeMillis();
         Arrays.sort(array);
-        LOG.info("Arrays.sort    : {} sec.", '?');
+        duration = System.currentTimeMillis() - start;
+        LOG.info("Arrays.sort    : {} ms", duration);
         sumTask = new SumTask(array);
         result = pool.invoke(sumTask);
-        LOG.info("Sort checksum  : {}", result);
+        LOG.info("Arrays.sort checksum  : {}", result);
     }
 }
