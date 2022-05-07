@@ -15,10 +15,11 @@
  */
 package ch.hslu.ad.sw10.quicksort;
 
-import ch.hslu.ad.exercise.n4.array.init.RandomInitTask;
-import ch.hslu.ad.exercise.n4.array.sum.SumTask;
 import java.util.Arrays;
 import java.util.concurrent.ForkJoinPool;
+
+import ch.hslu.ad.sw10.array.init.RandomInitTask;
+import ch.hslu.ad.sw10.array.sum.SumTask;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
