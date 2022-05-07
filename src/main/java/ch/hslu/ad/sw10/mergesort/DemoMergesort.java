@@ -52,7 +52,7 @@ public final class DemoMergesort {
         }
         LOG.info("average parallel: {} ms", sum / iter);
 
-        for (int i = 0; i < iter; i++) {
+       /* for (int i = 0; i < iter; i++) {
             serialMergeSort();
             durationArray[i + iter] = duration;
         }
@@ -60,7 +60,7 @@ public final class DemoMergesort {
         for (int i = 0; i < iter; i++) {
             sum += durationArray[i + iter];
         }
-        LOG.info("average serial: {} ms", sum / iter);
+        LOG.info("average serial: {} ms", sum / iter);*/
     }
 
     private static void parallelMergeSort() {
