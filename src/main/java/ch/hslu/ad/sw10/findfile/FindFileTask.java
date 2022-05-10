@@ -54,17 +54,7 @@ public final class FindFileTask extends CountedCompleter<String> {
 
     @Override
     public void compute() {
-        final File[] list = this.dir.listFiles();
-        if (list.length < THRESHOLD) {
-            findFile(this.dir);
-        } else {
-            int partitionIndex = list.length / 2;
-            this.addToPendingCount(2);
-            final FindFileTask taskLeft = new FindFileTask(this, this.regex, list[0], this.result);
-            taskLeft.fork();
-            final FindFileTask taskRight = new FindFileTask(this, this.regex, list[partitionIndex], this.result);
-            taskRight.fork();
-        }
+        findFile(this.dir);
     }
 
     @Override
@@ -80,10 +70,11 @@ public final class FindFileTask extends CountedCompleter<String> {
         if (list != null) {
             for (File file : list) {
                 if (file.isDirectory()) {
-                    findFile(file);
+                    this.addToPendingCount(1);
+                    new FindFileTask(this, this.regex, file, this.result).fork();
                 } else if (this.regex.equalsIgnoreCase(file.getName())) {
                     LOG.info(file.getParentFile());
-                    this.result.set(file.getAbsolutePath());
+                    this.result.compareAndExchange(null, file.getParent());
                     this.quietlyCompleteRoot();
                     break;
                 }

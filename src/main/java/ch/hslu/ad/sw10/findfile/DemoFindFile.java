@@ -43,11 +43,11 @@ public final class DemoFindFile {
         long start;
         long duration;
 
-        /*LOG.info("Start searching '{}' recursiv in '{}'", search, rootDir);
+        LOG.info("Start searching '{}' recursiv in '{}'", search, rootDir);
         start = System.currentTimeMillis();
         FindFile.findFile(search, rootDir);
         duration = System.currentTimeMillis() - start;
-        LOG.info("Found in {} msec.", duration);*/
+        LOG.info("Found in {} msec.", duration);
 
         LOG.info("Find '{}' concurrent in '{}'", search, rootDir);
         start = System.currentTimeMillis();
