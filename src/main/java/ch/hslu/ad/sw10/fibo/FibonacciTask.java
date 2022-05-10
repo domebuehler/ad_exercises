@@ -15,6 +15,8 @@
  */
 package ch.hslu.ad.sw10.fibo;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.RecursiveTask;
 
 /**
@@ -24,7 +26,7 @@ import java.util.concurrent.RecursiveTask;
 public final class FibonacciTask extends RecursiveTask<Long> {
 
     private final int n;
-    private static final int THRESHOLD = 22;
+    private static final int THRESHOLD = 30;
 
     /**
      * Erzeugt einen Fibonacci Task.
@@ -37,12 +39,26 @@ public final class FibonacciTask extends RecursiveTask<Long> {
 
     @Override
     protected Long compute() {
-        if (this.n < THRESHOLD) {
-            return DemoFibonacciCalc.fiboRecursive(this.n);
+        return fibo(n);
+    }
+
+    private long fibo(int n) {
+        if (n == 0 || n == 1) {
+            return n;
+        }
+
+        if (n < THRESHOLD) {
+            return fibo(n -2) + fibo(n -1);
         } else {
-            FibonacciTask fiboTask1 = new FibonacciTask(n - 1);
-            FibonacciTask fiboTask2 = new FibonacciTask(n - 2);
-            return fiboTask1.invoke() + fiboTask2.invoke();
+            ForkJoinTask fiboTask1 = new FibonacciTask(n - 1).fork();
+            ForkJoinTask fiboTask2 = new FibonacciTask(n - 2).fork();
+
+            try {
+                return (long)fiboTask1.get() + (long) fiboTask2.get();
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+                return 0;
+            }
         }
     }
 }
