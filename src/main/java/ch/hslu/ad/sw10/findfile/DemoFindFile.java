@@ -40,12 +40,21 @@ public final class DemoFindFile {
     public static void main(String[] args) {
         final String search = "test.properties";
         final File rootDir = new File(System.getProperty("user.home"));
-        LOG.info("Start searching '{}' recurive in '{}'", search, rootDir);
+        long start;
+        long duration;
+
+        /*LOG.info("Start searching '{}' recursiv in '{}'", search, rootDir);
+        start = System.currentTimeMillis();
         FindFile.findFile(search, rootDir);
-        LOG.info("Found in {} msec.", '?');
+        duration = System.currentTimeMillis() - start;
+        LOG.info("Found in {} msec.", duration);*/
+
         LOG.info("Find '{}' concurrent in '{}'", search, rootDir);
+        start = System.currentTimeMillis();
         final FindFileTask root = new FindFileTask(search, rootDir);
-        LOG.info(root.invoke());
-        LOG.info("Found in {} msec.", '?');
+        String result = root.invoke();
+        duration = System.currentTimeMillis() - start;
+        LOG.info("Found in {} msec.", duration);
+        LOG.info("result: {}", result);
     }
 }

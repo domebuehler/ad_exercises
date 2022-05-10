@@ -15,6 +15,9 @@
  */
 package ch.hslu.ad.sw10.findfile;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.File;
 import java.util.concurrent.CountedCompleter;
 import java.util.concurrent.atomic.AtomicReference;
@@ -28,32 +31,64 @@ public final class FindFileTask extends CountedCompleter<String> {
     private final String regex;
     private final File dir;
     private final AtomicReference<String> result;
+    private static final int THRESHOLD = 100;
+
+    private static final Logger LOG = LogManager.getLogger(FindFileTask.class);
 
     /**
      * Erzeugt eine File-Such-Aufgabe.
      *
      * @param regex Ausdruck der den Filenamen enthält.
-     * @param dir Verzeichnis in dem das File gesucht wird.
+     * @param dir   Verzeichnis in dem das File gesucht wird.
      */
     public FindFileTask(String regex, File dir) {
         this(null, regex, dir, new AtomicReference<>(null));
     }
 
-    private FindFileTask(final CountedCompleter<?> parent, final String regex, final File dir,
-            final AtomicReference<String> result) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private FindFileTask(final CountedCompleter<?> parent, final String regex, final File dir, final AtomicReference<String> result) {
+        super(parent);
+        this.regex = regex;
+        this.result = result;
+        this.dir = dir;
     }
 
     @Override
     public void compute() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        final File[] list = this.dir.listFiles();
+        if (list.length < THRESHOLD) {
+            findFile(this.dir);
+        } else {
+            int partitionIndex = list.length / 2;
+            this.addToPendingCount(2);
+            final FindFileTask taskLeft = new FindFileTask(this, this.regex, list[0], this.result);
+            taskLeft.fork();
+            final FindFileTask taskRight = new FindFileTask(this, this.regex, list[partitionIndex], this.result);
+            taskRight.fork();
+        }
     }
 
     @Override
     public String getRawResult() {
         if (result != null) {
-            return result.get();
+            return this.result.get();
         }
         return null;
+    }
+
+    private void findFile(final File dir) {
+        final File[] list = dir.listFiles();
+        if (list != null) {
+            for (File file : list) {
+                if (file.isDirectory()) {
+                    findFile(file);
+                } else if (this.regex.equalsIgnoreCase(file.getName())) {
+                    LOG.info(file.getParentFile());
+                    this.result.set(file.getAbsolutePath());
+                    this.quietlyCompleteRoot();
+                    break;
+                }
+            }
+        }
+        this.tryComplete();
     }
 }
