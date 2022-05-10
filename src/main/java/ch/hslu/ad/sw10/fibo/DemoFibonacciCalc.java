@@ -18,6 +18,8 @@ package ch.hslu.ad.sw10.fibo;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.concurrent.ForkJoinPool;
+
 /**
  * Codevorlage für die Verwendung von RecursiveTask mit einem Fork-Join-Pool.
  */
@@ -64,16 +66,33 @@ public final class DemoFibonacciCalc {
      */
     public static void main(final String[] args) {
         final int n = 42;
-        final FibonacciTask task = new FibonacciTask(n);
+        final FibonacciTask commonTask = new FibonacciTask(n);
+        final FibonacciTask poolTask = new FibonacciTask(n);
+        final ForkJoinPool pool = new ForkJoinPool();
         LOG.info("fibo({}) start...", n);
-        long result = task.invoke();
-        LOG.info("Conc. recursive = {}", result);
-        LOG.info("Conc. recursive : {} msec.", '?');
+
+        long start = System.currentTimeMillis();
+        long result = commonTask.invoke();
+        long duration = System.currentTimeMillis() - start;
+        LOG.info("Common Pool = {}", result);
+        LOG.info("Common Pool : {} ms", duration);
+
+        start = System.currentTimeMillis();
+        result = pool.invoke(poolTask);
+        duration = System.currentTimeMillis() - start;
+        LOG.info("ForkJoinPool = {}", result);
+        LOG.info("ForkJoinPool : {} ms", duration);
+
+        start = System.currentTimeMillis();
         result = fiboIterative(n);
-        LOG.info("Func. iterative = {}", result);
-        LOG.info("Func. iterative : {} msec.", '?');
+        duration = System.currentTimeMillis() - start;
+        LOG.info("serial iterative = {}", result);
+        LOG.info("serial iterative : {} ms", duration);
+
+        start = System.currentTimeMillis();
         result = fiboRecursive(n);
-        LOG.info("Func. recursive = {}", result);
-        LOG.info("Func. recursive : {} sec.", '?');
+        duration = System.currentTimeMillis() - start;
+        LOG.info("serial recursive = {}", result);
+        LOG.info("serial recursive : {} ms", duration);
     }
 }

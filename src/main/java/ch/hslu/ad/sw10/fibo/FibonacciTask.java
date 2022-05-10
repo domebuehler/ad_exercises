@@ -24,6 +24,7 @@ import java.util.concurrent.RecursiveTask;
 public final class FibonacciTask extends RecursiveTask<Long> {
 
     private final int n;
+    private static final int THRESHOLD = 22;
 
     /**
      * Erzeugt einen Fibonacci Task.
@@ -36,6 +37,12 @@ public final class FibonacciTask extends RecursiveTask<Long> {
 
     @Override
     protected Long compute() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (this.n < THRESHOLD) {
+            return DemoFibonacciCalc.fiboRecursive(this.n);
+        } else {
+            FibonacciTask fiboTask1 = new FibonacciTask(n - 1);
+            FibonacciTask fiboTask2 = new FibonacciTask(n - 2);
+            return fiboTask1.invoke() + fiboTask2.invoke();
+        }
     }
 }
