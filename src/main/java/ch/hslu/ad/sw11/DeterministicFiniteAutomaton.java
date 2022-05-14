@@ -1,5 +1,6 @@
 package ch.hslu.ad.sw11;
 
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class DeterministicFiniteAutomaton {
@@ -49,5 +50,14 @@ public final class DeterministicFiniteAutomaton {
         } else {
             breakFlag = true;
         }
+    }
+
+    public static boolean isWordLanguageRegex(final String string) {
+        if (string == null) {
+            return false;
+        }
+        Pattern pattern = Pattern.compile("0(1(11)?0)*");
+        Matcher matcher = pattern.matcher(string);
+        return matcher.matches();
     }
 }
