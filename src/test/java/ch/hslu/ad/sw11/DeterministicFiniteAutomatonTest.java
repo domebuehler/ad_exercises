@@ -21,6 +21,7 @@ class DeterministicFiniteAutomatonTest {
                 () -> assertThat(DeterministicFiniteAutomaton.isWordLanguage("0101")).isFalse(),
                 () -> assertThat(DeterministicFiniteAutomaton.isWordLanguage("0110")).isFalse(),
                 () -> assertThat(DeterministicFiniteAutomaton.isWordLanguage("010010")).isFalse(),
+                () -> assertThat(DeterministicFiniteAutomaton.isWordLanguage("01101110")).isFalse(),
                 () -> assertThat(DeterministicFiniteAutomaton.isWordLanguage(null)).isFalse()
         );
     }
