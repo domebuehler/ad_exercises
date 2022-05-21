@@ -10,9 +10,7 @@ public final class OptimizedSearchAutomate {
         if (a == null) {
             return notFound;
         }
-
         do {
-
             switch (state) {
                 case "":
                     if (a.charAt(i) == 'A') {
