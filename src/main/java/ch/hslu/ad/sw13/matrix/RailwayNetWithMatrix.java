@@ -1,27 +1,31 @@
 package ch.hslu.ad.sw13.matrix;
 
+import ch.hslu.ad.sw13.model.Connection;
+import ch.hslu.ad.sw13.model.RailwayNetInterface;
+import ch.hslu.ad.sw13.model.Station;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public final class RailwayNetImplementation implements RailwayNet {
+public final class RailwayNetWithMatrix implements RailwayNetInterface {
 
     private int numberOfNodes = 0;
     private int numberOfConnections = 0;
     private final List<Station> stations = new ArrayList<>();
     private int[][] matrix;
 
-    public static RailwayNet createForRotkreuz() {
-        RailwayNet railwayNet = new RailwayNetImplementation();
+    public static RailwayNetInterface createForRotkreuz() {
+        RailwayNetInterface railwayNet = new RailwayNetWithMatrix();
         railwayNet.addStation(new Station("Luzern"));
         railwayNet.addStation(new Station("Rotkreuz"));
         railwayNet.addStation(new Station("Zug"));
         railwayNet.addStation(new Station("Arth-Goldau"));
-        railwayNet.addConnection(new Station("Luzern"), new Station("Rotkreuz"), 16);
-        railwayNet.addConnection(new Station("Luzern"), new Station("Arth-Goldau"), 30);
-        railwayNet.addConnection(new Station("Rotkreuz"), new Station("Arth-Goldau"), 15);
-        railwayNet.addConnection(new Station("Rotkreuz"), new Station("Zug"), 12);
-        railwayNet.addConnection(new Station("Zug"), new Station("Arth-Goldau"), 20);
+        railwayNet.addConnection(new Connection(new Station("Luzern"), new Station("Rotkreuz"), 16));
+        railwayNet.addConnection(new Connection(new Station("Luzern"), new Station("Arth-Goldau"), 30));
+        railwayNet.addConnection(new Connection(new Station("Rotkreuz"), new Station("Arth-Goldau"), 15));
+        railwayNet.addConnection(new Connection(new Station("Rotkreuz"), new Station("Zug"), 12));
+        railwayNet.addConnection(new Connection(new Station("Zug"), new Station("Arth-Goldau"), 20));
         return railwayNet;
     }
 
@@ -49,27 +53,29 @@ public final class RailwayNetImplementation implements RailwayNet {
     }
 
     @Override
-    public void addConnection(final Station start, final Station destination, final int travelTime) {
-        if (!(this.stations.contains(start) && this.stations.contains(destination))) {
-            throw new IllegalArgumentException("Stations are not valid");
-        }
-        int indexStart = this.stations.indexOf(start);
-        int indexDestination = this.stations.indexOf(destination);
-        this.matrix[indexStart][indexDestination] = travelTime;
-        this.matrix[indexDestination][indexStart] = travelTime;
+    public void addConnection(final Connection connection) {
+        checkStations(connection);
+        int indexStart = this.stations.indexOf(connection.from());
+        int indexDestination = this.stations.indexOf(connection.to());
+        this.matrix[indexStart][indexDestination] = connection.travelTime();
+        this.matrix[indexDestination][indexStart] = connection.travelTime();
         this.numberOfConnections += 2;
     }
 
     @Override
-    public void removeConnection(final Station start, final Station destination) {
-        if (!(this.stations.contains(start) && this.stations.contains(destination))) {
-            throw new IllegalArgumentException("Stations are not valid");
-        }
-        int indexStart = this.stations.indexOf(start);
-        int indexDestination = this.stations.indexOf(destination);
+    public void removeConnection(final Connection connection) {
+        checkStations(connection);
+        int indexStart = this.stations.indexOf(connection.from());
+        int indexDestination = this.stations.indexOf(connection.to());
         this.matrix[indexStart][indexDestination] = 0;
         this.matrix[indexDestination][indexStart] = 0;
         this.numberOfConnections -= 2;
+    }
+
+    private void checkStations(final Connection connection) {
+        if (!(this.stations.contains(connection.from()) && this.stations.contains(connection.to()))) {
+            throw new IllegalArgumentException("Stations are not valid");
+        }
     }
 
     @Override

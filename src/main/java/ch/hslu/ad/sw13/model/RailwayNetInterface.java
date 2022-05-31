@@ -1,16 +1,23 @@
-package ch.hslu.ad.sw13.matrix;
+package ch.hslu.ad.sw13.model;
 
 import java.util.List;
-import java.util.Map;
 
-public interface RailwayNet {
+public interface RailwayNetInterface {
     void addStation(final Station station);
+
     void removeStation(final Station station);
-    void addConnection(final Station start, final Station destination, final int travelTime);
-    void removeConnection(final Station start, final Station destination);
+
+    void addConnection(final Connection connection);
+
+    void removeConnection(final Connection connection);
+
     int getNumberOfStations();
+
     int getNumberOfConnections();
+
     boolean isDirectConnectionBetween(final Station start, final Station destination);
+
     List<Station> getDirectConnectionsFrom(final Station start);
+
     int getTravelTimeForDirectConnection(final Station start, final Station destination);
 }

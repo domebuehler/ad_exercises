@@ -1,12 +1,8 @@
-package ch.hslu.ad.sw13.matrix;
+package ch.hslu.ad.sw13.model;
 
 import java.util.Objects;
 
 public record Station(String name) {
-
-    public String getName() {
-        return name;
-    }
 
     @Override
     public boolean equals(Object o) {
