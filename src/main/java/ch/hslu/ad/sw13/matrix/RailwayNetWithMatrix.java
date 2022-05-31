@@ -99,7 +99,7 @@ public final class RailwayNetWithMatrix implements RailwayNetInterface {
     }
 
     @Override
-    public List<Station> getDirectConnectionsFrom(final Station start) {
+    public List<Connection> getDirectConnectionsFrom(final Station start) {
         throw new UnsupportedOperationException(); // TODO: 27.05.2022  
     }
 

@@ -17,7 +17,7 @@ public interface RailwayNetInterface {
 
     boolean isDirectConnectionBetween(final Station start, final Station destination);
 
-    List<Station> getDirectConnectionsFrom(final Station start);
+    List<Connection> getDirectConnectionsFrom(final Station start);
 
     int getTravelTimeForDirectConnection(final Station start, final Station destination);
 }
