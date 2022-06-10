@@ -42,6 +42,11 @@ public final class JoinAndSleep implements Runnable {
             this.getWaitingFor().join();
         }
         sleep();
+        if (this.runThread.isInterrupted()) {
+            long end = System.currentTimeMillis();
+            LOG.info("{} interrupted after {} ms", this, end - start);
+            return;
+        }
         long end = System.currentTimeMillis();
         LOG.info("{} finished after {} ms", this, end - start);
     }
@@ -51,6 +56,7 @@ public final class JoinAndSleep implements Runnable {
             Thread.sleep(this.waitingTime);
         } catch (InterruptedException e) {
             LOG.info("{} interrupted while sleeping", this);
+            this.runThread.interrupt();
         }
     }
 

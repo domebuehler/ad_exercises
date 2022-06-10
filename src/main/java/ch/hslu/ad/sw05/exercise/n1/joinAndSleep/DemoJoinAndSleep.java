@@ -16,8 +16,8 @@ public final class DemoJoinAndSleep {
         thread2.start();
         thread1.start();
 
-        /*Thread.sleep(2000);
-        thread3.stop();*/
+        Thread.sleep(2000);
+        thread3.stop();
 
         thread1.join();
         LOG.info("demo terminated");
